@@ -1,0 +1,34 @@
+{
+    "workbench.colorTheme": "Default Dark+",
+    "[vue]": {
+        "editor.defaultFormatter": "Vue.volar"
+    },
+    "[html]": {
+        "editor.defaultFormatter": "vscode.html-language-features"
+    },
+    "git.autofetch": true,
+    "editor.fontSize": 18,
+    "go.autocompleteUnimportedPackages": true,
+    "go.alternateTools": {},
+    "go.buildOnSave": "off",
+    "go.lintOnSave": "workspace",
+    "go.vetOnSave": "workspace",
+    "go.buildTags": "",
+    "go.buildFlags": [],
+    "go.lintTool": "golint",
+    "go.lintFlags": [],
+    "go.vetFlags": [],
+    "go.testOnSave": false,
+    "go.coverOnSave": false,
+    "go.useCodeSnippetsOnFunctionSuggest": true,
+    "editor.formatOnSave": true,
+    "go.formatTool": "goformat",
+    "go.formatFlags": [],
+    "go.goroot": "C:/Program Files/Go",
+    "go.gopath": "C:/Users/seonb/go",
+    "go.inferGopath": true,
+    "go.gocodeAutoBuild": false,
+    "go.testFlags": [
+        "-v"
+    ],
+}
