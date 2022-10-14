@@ -76,11 +76,14 @@ func UpdateMember(c *gin.Context) {
     if err != nil {
         fmt.Printf("Failed to read file: %v\n", err)
     }
-    var u []Account
+    // u:=[]Account{}
+    // var u =new(Account)
     var input Input
     var num, _ = strconv.Atoi(c.Params.ByName("id"))
     err = json.Unmarshal(data, &u) // json을 구조체형으로 변환
-
+    // if u.ID!=""{
+    //     u
+    // }
     u[num-1].ID = input.ID
     u[num-1].PW = input.PW
     u[num-1].Name = input.Name
@@ -118,7 +121,7 @@ func main() {
     r.GET("/account", GetList)
     r.GET("/account/:id", FindMembers)
     r.POST("/account/login", LoginCheck)
-    r.PUT("/account/:id", UpdateMember)
+    r.PUT("/account/:id", UpdateMember) //파일받아와서 특정회원정보 불러와서 입력받아 수정해가지고 다시 저장
     // r.POST("/account", CreateMember)
     // r.GET("/account/:id", DeleteMembers)
 
