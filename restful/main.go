@@ -12,15 +12,28 @@ import (
 )
 
 type Account struct {
-    Seq         int    `json:"seq" uri:"id"`
+    Seq         int    `json:"seq"`
     ID          string `json:"id"`
-    Pw          string `json:"pw"`
+    PW          string `json:"pw"`
     Name        string `json:"name"`
     Email       string `json:"email"`
     Hp          string `json:"hp"`
     Role        int    `json:"role"`
     State       int    `json:"state"`
     Description string `json:"des"`
+}
+
+type Login struct {
+    ID string `json="id"`
+    PW string `json="pw"`
+}
+
+type Input struct {
+    ID    string `json:"id"`
+    PW    string `json:"pw"`
+    Name  string `json:"name"`
+    Email string `json:"email"`
+    Hp    string `json:"hp"`
 }
 
 func GetList(c *gin.Context) {
@@ -59,43 +72,55 @@ func FindMembers(c *gin.Context) {
 }
 
 func UpdateMember(c *gin.Context) {
-    data, err := os.ReadFile("./account.json")
+    data, err := os.ReadFile("./account.json") // 파일가져오기
     if err != nil {
         fmt.Printf("Failed to read file: %v\n", err)
     }
-    var u []Account // 구조체안에는 하나의객체가 아니라 배열로 이루어져있기때문에 '[]구조채명' 으로 선언한다.
-    err = json.Unmarshal(data, &u)
+    var u []Account
+    var input Input
+    var num, _ = strconv.Atoi(c.Params.ByName("id"))
+    err = json.Unmarshal(data, &u) // json을 구조체형으로 변환
 
-    // 입력받은 seq의 특정항목을 수정한후 저장
+    u[num-1].ID = input.ID
+    u[num-1].PW = input.PW
+    u[num-1].Name = input.Name
+    u[num-1].Hp = input.Hp
+    u[num-1].Email = input.Email
 
-    id, err := strconv.Atoi(c.Params.ByName("id"))
-    if err != nil {
-        return
+    c.JSON(http.StatusOK, gin.H{"result": u[num-1]})
+}
+
+func LoginCheck(c *gin.Context) {
+    data, _ := os.ReadFile("./account.json")
+    var u []Account
+    var login Login
+
+    _ = json.Unmarshal(data, &u)
+
+    if err := c.ShouldBind(&login); err != nil {
+        c.JSON(401, gin.H{"Error": err})
     }
-    c.JSON(http.StatusOK, gin.H{"result": id})
-    // if err := c.BindJSON(&u); err != nil {
-    //     utils.Response(c, utils.BAD_REQUEST, "Bad Params.")
-    //     panic(err)
-    // }
-
-    // db := utils.DbConnect()
-
-    // if res := db.Model(&Account{}).Where("seq = ?", seq).Updates(u); res.Error != nil {
-    //     utils.Response(c, utils.INTERNAL_SERVER_ERROR, "Query Error.")
-    //     panic(res.Error)
-    // }
-
-    // Response(c, utils.CREATED, "OK")
+    for index := range u {
+        if u[index].ID == login.ID && u[index].PW == login.PW {
+            c.JSON(http.StatusOK, gin.H{"Name is": u[index].Name})
+            // num++
+            break
+        } else {
+            if index == 19 { //마지막 까지 확인했을때 일치하는게 없으면 출력
+                c.JSON(401, "아이디 또는 비밀번호를 다시 확인하세요.")
+            }
+        }
+    }
 }
 
 func main() {
     r := gin.Default()
     r.GET("/account", GetList)
     r.GET("/account/:id", FindMembers)
+    r.POST("/account/login", LoginCheck)
     r.PUT("/account/:id", UpdateMember)
     // r.POST("/account", CreateMember)
     // r.GET("/account/:id", DeleteMembers)
-    // r.POST("/account/login", LoginCheck)
 
     r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }
